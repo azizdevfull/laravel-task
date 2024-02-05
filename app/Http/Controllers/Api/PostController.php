@@ -23,7 +23,6 @@ class PostController extends Controller
             $postsQuery->where('title', 'like', '%' . $title . '%');
         }
 
-        // Get the filtered posts and return as a resource collection
         $posts = $postsQuery->get();
 
         return PostResource::collection($posts);
