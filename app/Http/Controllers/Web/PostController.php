@@ -11,9 +11,17 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::all();
+        $query = $request->input('query');
+
+        $postsQuery = Post::query()->orderBy('created_at', 'desc');
+
+        if ($query) {
+            $postsQuery->where('title', 'like', '%' . $query . '%');
+        }
+
+        $posts = $postsQuery->get();
 
         return view('posts.index', compact('posts'));
     }
