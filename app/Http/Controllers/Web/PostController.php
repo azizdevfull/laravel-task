@@ -77,6 +77,17 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $post = Post::findOrFail($id);
+
+        if ($this->checkAuthor($post)) {
+            $post->delete();
+        }
+
+        return redirect()->route('posts');
+    }
+
+    public function checkAuthor($post)
+    {
+        return auth()->user()->id === $post->user_id;
     }
 }

@@ -46,7 +46,16 @@
                                         <td class="px-6 py-4 whitespace-no-wrap">{{ $post->author->name }}</td>
                                         <td class="px-6 py-4 whitespace-no-wrap"><a href="{{ 
                                         route('posts.show', $post->id)}}">
-                                            Show</a></td>
+                                            Show</a>
+                                            @if (auth()->user() && auth()->user()->id == $post->author->id)
+                                            <form method="POST" action="{{ route('posts.destroy', $post->id) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" onclick="return confirm('Are you sure you want to delete this post?')" class="text-red-500">Delete</button>
+                                            </form>
+                                        @endif
+                                        
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
