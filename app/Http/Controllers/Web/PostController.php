@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Http\Controllers\Controller;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Web\StorePostRequest;
 
 class PostController extends Controller
 {
@@ -31,15 +33,17 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('posts.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        //
+        Auth::user()->posts()->create($request->all());
+
+        return redirect()->route('posts');
     }
 
     /**
@@ -47,7 +51,6 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        //
     }
 
     /**
