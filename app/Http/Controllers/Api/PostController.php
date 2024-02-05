@@ -14,9 +14,19 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return PostResource::collection(Post::all());
+        $title = $request->input('query');
+
+        $postsQuery = Post::query()->orderBy('created_at', 'desc');
+        if ($title) {
+            $postsQuery->where('title', 'like', '%' . $title . '%');
+        }
+
+        // Get the filtered posts and return as a resource collection
+        $posts = $postsQuery->get();
+
+        return PostResource::collection($posts);
     }
 
     /**
@@ -53,7 +63,24 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $post = Post::find($id);
+        if (!$post) {
+            return response()->json([
+                'message' => 'Post not found'
+            ]);
+        }
+        if ($this->checkAuthor($post)) {
+            $post->update($request->all());
+        } else {
+            return response()->json([
+                'message' => 'no access'
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Post updated successfully!',
+            'data' => new PostResource($post),
+        ]);
     }
 
     /**
@@ -61,6 +88,27 @@ class PostController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $post = Post::find($id);
+        if (!$post) {
+            return response()->json([
+                'message' => 'Post not found'
+            ]);
+        }
+        if ($this->checkAuthor($post)) {
+            $post->delete();
+        } else {
+            return response()->json([
+                'message' => 'no access'
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Post deleted successfully!',
+        ]);
+    }
+
+    public function checkAuthor($post)
+    {
+        return Auth::user()->id === $post->user_id;
     }
 }

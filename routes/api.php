@@ -30,4 +30,7 @@ Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{id}', [PostController::class, 'show']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/posts/create', [PostController::class, 'store']);
+    Route::put('/posts/{id}/update', [PostController::class, 'update']);
+    Route::delete('/posts/{id}/delete', [PostController::class, 'destroy']);
 });
