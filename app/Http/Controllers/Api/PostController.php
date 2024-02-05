@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
-use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\PostResource;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Api\StorePostRequest;
 
 class PostController extends Controller
 {
@@ -20,9 +22,14 @@ class PostController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        //
+        $post = Auth::user()->posts()->create($request->all());
+
+        return response()->json([
+            'message' => 'Post created successfully!',
+            'data' => new PostResource($post),
+        ]);
     }
 
     /**
@@ -30,7 +37,15 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $post = Post::find($id);
+
+        if (!$post) {
+            return response()->json([
+                'message' => 'Post not found'
+            ]);
+        }
+
+        return new PostResource($post);
     }
 
     /**

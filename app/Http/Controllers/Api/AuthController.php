@@ -14,11 +14,7 @@ class AuthController extends Controller
 {
     public function register(RegisterUserRequest $request)
     {
-        $user = new User();
-        $user->name = $request->name;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->save();
+        $user = User::create($request->all());
         $token = $user->createToken('api_token')->plainTextToken;
 
         return response()->json([
