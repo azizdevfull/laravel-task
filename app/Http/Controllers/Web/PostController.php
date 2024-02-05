@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\Web\StorePostRequest;
+use App\Http\Requests\Web\UpdatePostRequest;
 
 class PostController extends Controller
 {
@@ -61,15 +62,25 @@ class PostController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $post = Post::findOrFail($id);
+
+        return view('posts.edit', compact('post'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdatePostRequest $request, string $id)
     {
-        //
+
+        $post = Post::findOrFail($id);
+        if ($this->checkAuthor($post)) {
+            $post->update($request->all());
+        } else {
+            return redirect()->route('posts');
+        }
+
+        return redirect()->route('posts');
     }
 
     /**

@@ -23,7 +23,7 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
-
+Route::get('/posts/new', [PostController::class, 'create'])->middleware(['auth', 'verified'])->name('posts.create');
 Route::get('/posts', [PostController::class, 'index'])->name('posts');
 Route::get('/posts/{id}', [PostController::class, 'show'])->name('posts.show');
 Route::middleware('auth')->group(function () {
@@ -31,8 +31,11 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+    // Route::get('/posts/create', [PostController::class, 'create'])->name('posts.create');
+
     Route::post('/posts/store', [PostController::class, 'store'])->name('posts.store');
+    Route::get('/posts/edit/{id}', [PostController::class, 'edit'])->name('posts.edit');
+    Route::put('/posts/update/{id}', [PostController::class, 'update'])->name('posts.update');
     Route::delete('/posts/delete/{id}', [PostController::class, 'destroy'])->name('posts.destroy');
 });
 
